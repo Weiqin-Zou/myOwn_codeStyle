@@ -25,7 +25,7 @@ function one_search(){
     client=$(sed -n "${clientNum}p" $clientAccount)
     pageCnt=1
   url=${prefix}${query}"\"${timeRange}\"&page=${pageCnt}&per_page=${pageLimit}&${client}"
-    curl $url -o ${whichHour}/tmpFilter
+    curl -m 120 $url -o ${whichHour}/tmpFilter
 
     grep "\"full_name\":" ${whichHour}/tmpFilter | awk '{print $NF}' | cut -f1 -d "," > ${whichHour}/tmpFilterFn
     totalCnt=$(grep "\"total_count\":" ${whichHour}/tmpFilter | awk '{print $NF}' | cut -f1 -d ",")
@@ -33,12 +33,13 @@ function one_search(){
     cat ${whichHour}/tmpFilterFn >>${whichHour}/${whichHour}_fn
     fnCnt=$(cat ${whichHour}/tmpFilterFn | wc -l)
     gotFn=$((gotFn+fnCnt))
-    
-    if [ $gotFn -eq $totalCnt ];then
+
+    rm ${whichHour}/tmpFilter
+    if [ "$gotFn" -eq "$totalCnt" ];then
         return
     fi
 
-    while [ $gotFn < $totalCnt ]
+    while [ "$gotFn" -lt "$totalCnt" ]
     do
         pageCnt=$((pageCnt+1))
         cnt=$((cnt+1))
@@ -46,13 +47,13 @@ function one_search(){
         client=$(sed -n "${clientNum}p" $clientAccount)
 url=${prefix}${query}"\"${timeRange}\"&page=${pageCnt}&per_page=${pageLimit}&${client}"
 
-        curl $url -o ${whichHour}/tmpFilter
+        curl -m 120 $url -o ${whichHour}/tmpFilter
 
         grep "\"full_name\":" ${whichHour}/tmpFilter | awk '{print $NF}' | cut -f1 -d "," > ${whichHour}/tmpFilterFn
         fnCnt=$(cat ${whichHour}/tmpFilterFn | wc -l)
         gotFn=$((gotFn+fnCnt))
         cat ${whichHour}/tmpFilterFn >>${whichHour}/${whichHour}_fn
-
+        rm ${whichHour}/tmpFilter
     done
 }
 

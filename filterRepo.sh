@@ -29,7 +29,7 @@ function one_search(){
 
     grep "\"full_name\":" ${whichHour}/tmpFilter | awk '{print $NF}' | cut -f1 -d "," > ${whichHour}/tmpFilterFn
     totalCnt=$(grep "\"total_count\":" ${whichHour}/tmpFilter | awk '{print $NF}' | cut -f1 -d ",")
-    echo $totalCnt >> ${whichHour}/${whichHour}_totalCnt
+    echo $timeRange $totalCnt >> ${whichHour}/${whichHour}_totalCnt
     cat ${whichHour}/tmpFilterFn >>${whichHour}/${whichHour}_fn
     fnCnt=$(cat ${whichHour}/tmpFilterFn | wc -l)
     gotFn=$((gotFn+fnCnt))

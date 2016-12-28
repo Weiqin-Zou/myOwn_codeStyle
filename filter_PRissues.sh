@@ -7,10 +7,10 @@ prLimit=200 #closed PR number >=200
 issueLimit=20 #closed issues number >=20
 
 cnt=1
-rm failed prIssueOk_fn filteredFn
+#rm failed prIssueOk_fn filteredFn
 for fn in $(cat $fnList)
 do
-    echo $fn >> filteredFn
+
     clientNum=$((cnt%clientCnt + 1))
     client=$(sed -n "${clientNum}p" $clientAccount)
     issueUrl="https://api.github.com/search/issues?q=type:issue+repo:${fn}+state:closed&${client}&per_page=1"
@@ -34,5 +34,6 @@ do
         fi
         echo $fn $cldPrCnt $cldIssueCnt >> prIssueOk_fn
     fi
+    echo $fn $cldPrCnt $cldIssueCnt >> filteredFn
     cnt=$((cnt+1))
 done

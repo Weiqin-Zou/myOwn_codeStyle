@@ -16,24 +16,30 @@ do
     issueUrl="https://api.github.com/search/issues?q=type:issue+repo:${fn}+state:closed&${client}&per_page=1"
     prUrl="https://api.github.com/search/issues?q=type:pr+repo:${fn}+state:closed&${client}&per_page=1"
 
-    rm prtmp
+    rm prtmp issuetmp
     curl -m 120 $prUrl -o prtmp
+    cnt=$((cnt+1))
+    cldPrCnt=0
     cldPrCnt=$(grep "\"total_count\":" prtmp | awk '{print $NF}' | cut -f1 -d ",")
     if [ "$cldPrCnt" = "" ];then
         echo "$fn:curl prs failed" >>failed
         continue
     fi
 
+    cldIssueCnt="no_need_to_search"
     if [ $cldPrCnt -ge $prLimit ];then
-        rm issuetmp
         curl -m 120 $issueUrl -o issuetmp
         cldIssueCnt=$(grep "\"total_count\":" issuetmp | awk '{print $NF}' | cut -f1 -d ",")
         if [ "$cldIssueCnt" = "" ];then
             echo "$fn:curl issues failed" >>failed
             continue
         fi
-        echo $fn $cldPrCnt $cldIssueCnt >> prIssueOk_fn
+        if [ $cldIssueCnt -ge $issueLimit ];then
+            echo $fn $cldPrCnt $cldIssueCnt >> prIssueOk_fn
+        fi
+            echo $fn $cldPrCnt $cldIssueCnt >> filteredFn
+    else
+        echo $fn $cldPrCnt $cldIssueCnt >> filteredFn
     fi
-    echo $fn $cldPrCnt $cldIssueCnt >> filteredFn
-    cnt=$((cnt+1))
+        
 done

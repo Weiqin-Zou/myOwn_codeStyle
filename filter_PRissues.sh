@@ -12,8 +12,8 @@ for fn in $(cat $fnList)
 do
     clientNum=$((cnt%clientCnt + 1))
     client=$(sed -n "${clientNum}p" $clientAccount)
-    issueUrl="https://api.github.com/search/issues?q=type:issue+repo:${fn}+state:closed&${client}"
-    prUrl="https://api.github.com/search/issues?q=type:pr+repo:${fn}+state:closed&${client}"
+    issueUrl="https://api.github.com/search/issues?q=type:issue+repo:${fn}+state:closed&${client}&per_page=1"
+    prUrl="https://api.github.com/search/issues?q=type:pr+repo:${fn}+state:closed&${client}&per_page=1"
 
     rm prtmp
     curl -m 120 $prUrl -o prtmp
@@ -31,7 +31,7 @@ do
             echo "$fn:curl issues failed" >>failed
             continue
         fi
-        echo $fn >> prIssueOk_fn
+        echo $fn $cldPrCnt $cldIssueCnt >> prIssueOk_fn
     fi
     cnt=$((cnt+1))
 done

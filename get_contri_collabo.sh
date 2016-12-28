@@ -15,14 +15,14 @@ do
   
     rm fntmp
     curl -m 120 $fnUrl -o fntmp
-    contriCnt=$(grep -B2 "^ *contributors$" fntmp | head -1 | awk '{print $NF}')
+    contriCnt=$(grep -B2 "^ *contributors$" fntmp | head -1 | awk '{print $NF}' | sed 's/,//g')
     if [ "$contriCnt" = "" ];then
         echo "$fn:curl contributors failed" >>failed
         continue
     fi
 
     if [ $contriCnt -ge $contriLimit ];then
-        collaUrl="https://github.com/${fn}/issues/show_menu_content?partial=issues/filters/authors_content"
+        collaUrl="https://github.com/${fn}/issues/show_menu_content?partial=issues/filters/authors_content?${client}"
         rm collatmp
         curl -m 120 $collaUrl -o collatmp
         collaCnt=$(grep "\"select-menu-item-text\"" collatmp | wc -l)
@@ -30,10 +30,11 @@ do
             echo "$fn:curl collaborators failed" >>failed
             continue
         fi
-        #half=$(echo $contriCnt | bc  ) TODO!!!
+        half=$(awk -v count=$contriCnt 'BEGIN{print count/2}')
         if [ $colla -le $half ];then
             echo $fn $cldPrCnt $cldIssueCnt >> developerOk_fn
         fi
     fi
     cnt=$((cnt+1))
+    echo $contriCnt $collaCnt
 done

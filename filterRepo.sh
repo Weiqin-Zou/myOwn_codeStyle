@@ -35,6 +35,10 @@ function one_search(){
     gotFn=$((gotFn+fnCnt))
 
     rm ${whichHour}/tmpFilter
+    if [ "$totalCnt" = "" ];then
+       return 
+    fi
+
     if [ "$gotFn" -eq "$totalCnt" ];then
         return
     fi

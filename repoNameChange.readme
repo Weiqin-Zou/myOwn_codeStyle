@@ -1,0 +1,16 @@
+dblock/waffle->Waffle/waffle
+Jasig/cas->apereo/cas
+amplab/tachyon->Alluxio/alluxio
+pac4j/pac4j DUPLICATE
+excilys/androidannotations->androidannotations/androidannotations
+facebook/presto->prestodb/presto
+frostwire/frostwire-desktop NOT FOUND
+jakimfett/Minechem: forked from iopleke/Minechem
+javaslang/javaslang->vavr-io/vavr
+openhab/openhab->openhab/openhab1-addons
+pahimar/Equivalent-Exchange-3->pahimar/Equivalent-Exchange
+
+From the above, we can see that some repos will change their names.
+We do not have 158 repos but only 156 repos.
+We can get the real repos names from the pulls data (this time, I retrieve the repo
+names from the commits_url of pulls. the original "fn" field of pulls still refers to the old original repo name. e.g., facebook/presto of prestodb/presto)
